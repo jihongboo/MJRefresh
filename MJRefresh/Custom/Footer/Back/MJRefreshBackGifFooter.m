@@ -103,12 +103,10 @@
 - (void)setState:(MJRefreshState)state
 {
     MJRefreshCheckState
-    
+    NSArray *images = self.stateImages[@(state)];
+    if (images.count == 0) return;
     // 根据状态做事情
     if (state == MJRefreshStatePulling || state == MJRefreshStateRefreshing) {
-        NSArray *images = self.stateImages[@(state)];
-        if (images.count == 0) return;
-        
         self.gifView.hidden = NO;
         [self.gifView stopAnimating];
         if (images.count == 1) { // 单张图片
@@ -121,7 +119,9 @@
     } else if (state == MJRefreshStateIdle) {
         self.gifView.hidden = NO;
     } else if (state == MJRefreshStateNoMoreData) {
-        self.gifView.hidden = YES;
+        self.gifView.hidden = NO;
+        [self.gifView stopAnimating];
+        self.gifView.image = [images lastObject];
     }
 }
 @end
